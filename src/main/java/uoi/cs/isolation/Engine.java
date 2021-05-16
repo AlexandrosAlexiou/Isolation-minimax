@@ -1,14 +1,17 @@
 package uoi.cs.isolation;
 
+import javax.swing.*;
 import java.awt.Color;
+import java.io.File;
+import java.nio.file.Path;
 
 
 public class Engine {
-    
-    static int[] dx = {2, 1, -1, -2, -2, -1, 1, 2};
-    static int[] dy = {1, 2, 2, 1, -1, -2, -2, -1};
+
+    static int[] dx = {-1, -1, -1, 0, 0, 0, +1, +1, +1};
+    static int[] dy = {-1, 0, +1, -1, 0, +1, -1, 0, +1};
     static int human = 1;
-    static int robot = 2;
+    static int computer = 2;
 
     static class Position {
         int x, y;
@@ -46,7 +49,7 @@ public class Engine {
     public int findscore(int[][] mat, Position p) {
         int res = 0;
         int x, y;
-        for(int i = 0; i < 8; i++) {
+        for(int i = 0; i < 9; i++) {
             x = p.x + dx[i];
             y = p.y + dy[i];
             if(x < 0 || x > 7 || y < 0 || y > 7) continue;
@@ -60,7 +63,7 @@ public class Engine {
     public int minimax(int[][] mat, boolean ismax, int depth, int depthlimit) {
         
         Position hpos = findPosition(human, mat);
-        Position rpos = findPosition(robot, mat);
+        Position rpos = findPosition(computer, mat);
         
         int rscore = findscore(mat, rpos);
         int hscore = findscore(mat, hpos);
@@ -81,13 +84,13 @@ public class Engine {
             
             int nx, ny;
             boolean pos = false;
-            for(int i = 0; i < 8; i++) {
+            for(int i = 0; i < 9; i++) {
                 nx = rpos.x + dx[i];
                 ny = rpos.y + dy[i];
                 if(nx < 0 || nx > 7 || ny < 0 || ny > 7) continue;
                 if(mat[nx][ny] == 0) {
                     pos = true;
-                    mat[nx][ny] = robot;
+                    mat[nx][ny] = computer;
                     mat[rpos.x][rpos.y] = -1;
                     int res = minimax(mat, false, depth + 1, depthlimit);
                     if(res > best) {
@@ -95,7 +98,7 @@ public class Engine {
                     }
                     
                     mat[nx][ny] = 0;
-                    mat[rpos.x][rpos.y] = robot;
+                    mat[rpos.x][rpos.y] = computer;
                 }
             }
         }
@@ -103,7 +106,7 @@ public class Engine {
             best = Integer.MAX_VALUE;
             int nx, ny;
             boolean pos = false;
-            for(int i = 0; i < 8; i++) {
+            for(int i = 0; i < 9; i++) {
                 nx = hpos.x + dx[i];
                 ny = hpos.y + dy[i];
                 if(nx < 0 || nx > 7 || ny < 0 || ny > 7) continue;
@@ -125,21 +128,20 @@ public class Engine {
     
     
     public MoveScore findBestMove(int[][] mat, int d) {
-        
         MoveScore optimal = new MoveScore();
         Position hpos = findPosition(human, mat);
-        Position rpos = findPosition(robot, mat);
+        Position rpos = findPosition(computer, mat);
         
-        int nx, ny, best = -1000000007;
+        int nx, ny, best = Integer.MIN_VALUE;
         
-        for(int i = 0; i < 8; i++) {
+        for(int i = 0; i < 9; i++) {
             nx = rpos.x + dx[i];
             ny = rpos.y + dy[i];
             if(nx < 0 || nx > 7 || ny < 0 || ny > 7) continue;
             
             if(mat[nx][ny] == 0) {
                 
-                mat[nx][ny] = robot;
+                mat[nx][ny] = computer;
                 mat[rpos.x][rpos.y] = -1;
                 int val = minimax(mat, false, 0, d);
 
@@ -151,7 +153,7 @@ public class Engine {
                 }
                 
                 mat[nx][ny] = 0;
-                mat[rpos.x][rpos.y] = robot;
+                mat[rpos.x][rpos.y] = computer;
             }
             
         }
@@ -161,7 +163,7 @@ public class Engine {
     
     public Position iterativeDeepening(int[][] mat) {
         Position res = new Position();
-        int best = -100000000;
+        int best = Integer.MIN_VALUE;
         MoveScore obj;
         for(int d = 1; d <= 7; d += 2) {
             obj = findBestMove(mat, d);
@@ -185,21 +187,18 @@ public class Engine {
         
         Position nextpos = iterativeDeepening(mat);
         if(nextpos.x == -1) {
-              //System.out.println("YOU WON");
               grid.gameover = true;
               grid.frame.setEnabled(false);
               return;
         }
-        Position rpos = findPosition(robot, mat);
+        Position rpos = findPosition(computer, mat);
         grid.buttons[rpos.x][rpos.y].status = -1;
-        grid.buttons[rpos.x][rpos.y].button.setBackground(Color.LIGHT_GRAY);
+        grid.buttons[rpos.x][rpos.y].button.setBackground(Color.BLACK);
         grid.buttons[rpos.x][rpos.y].button.setIcon(null);
         
-        grid.buttons[nextpos.x][nextpos.y].status = robot;
+        grid.buttons[nextpos.x][nextpos.y].status = computer;
         grid.buttons[nextpos.x][nextpos.y].button.setEnabled(false);
-        grid.buttons[nextpos.x][nextpos.y].button.setIcon(grid.bkn);
-        //System.out.println(nextpos.x + " " + nextpos.y);
-        
+        grid.buttons[nextpos.x][nextpos.y].button.setIcon(grid.black_queen);
     }
   
 }

@@ -11,18 +11,18 @@ import javax.swing.*;
 public class Gui {
 
     Semaphore s = new Semaphore(1);
-    static int[] dx = {2, 1, -1, -2, -2, -1, 1, 2};
-    static int[] dy = {1, 2, 2, 1, -1, -2, -2, -1};
+    static int[] dx = {-1, -1, -1, 0, 0, 0, +1, +1, +1};
+    static int[] dy = {-1, 0, +1, -1, 0, +1, -1, 0, +1};
     static int human = 1;
-    static int robot = 2;
-    boolean humanchance = true;
+    static int computer = 2;
+    boolean human_turn = true;
     boolean gameover = false;
 
     Path black_path = new File(ApplicationConstants.BLACK_QUEEN).toPath();
     Path white_path = new File(ApplicationConstants.WHITE_QUEEN).toPath();
 
-    Icon bkn  = new ImageIcon(black_path.toString());
-    Icon wkn  = new ImageIcon(white_path.toString());
+    Icon black_queen = new ImageIcon(black_path.toString());
+    Icon white_queen = new ImageIcon(white_path.toString());
     int plx, ply;
     
     public class Button {
@@ -35,14 +35,14 @@ public class Gui {
 
         private void addActionListener(Gui grid) {
             button.addActionListener(ae -> {
-                grid.humanchance = false;
+                grid.human_turn = false;
                 if(status == 3) {
                     button.setEnabled(false);
-                    button.setIcon(wkn);
+                    button.setIcon(white_queen);
                     button.setBackground(Color.WHITE);
                     status = human;
 
-                    for(int i = 0; i < 8; i++) {
+                    for(int i = 0; i < 9; i++) {
                         int nx = grid.plx + dx[i];
                         int ny = grid.ply + dy[i];
                         if(nx < 0 || nx > 7 || ny < 0 || ny > 7) continue;
@@ -53,7 +53,7 @@ public class Gui {
                         }
                     }
                     grid.buttons[grid.plx][grid.ply].button.setIcon(null);
-                    grid.buttons[grid.plx][grid.ply].button.setBackground(Color.LIGHT_GRAY);
+                    grid.buttons[grid.plx][grid.ply].button.setBackground(Color.BLACK);
                     grid.buttons[grid.plx][grid.ply].status = -1;
                     s.release();
                 }
@@ -62,9 +62,7 @@ public class Gui {
 
     }
     
-    
-    static int height = 400;
-    static int width = 400;
+
     JFrame frame;
     JPanel panel;
     Button[][] buttons;
@@ -88,6 +86,7 @@ public class Gui {
                panel.add(buttons[i][j].button);
                buttons[i][j].button.setBackground(Color.WHITE);
                buttons[i][j].button.setEnabled(false);
+               buttons[i][j].button.setOpaque(true);
            }
         }
         
@@ -97,27 +96,26 @@ public class Gui {
             rx = ((int)((Math.random() * 10))) % 8;
             ry = ((int)((Math.random() * 10))) % 8;
         }
-        //System.out.println(rx + " " + ry + " ");
-        buttons[rx][ry].button.setIcon(bkn);
+        buttons[rx][ry].button.setIcon(black_queen);
         buttons[rx][ry].button.setEnabled(false);
-        buttons[rx][ry].status = robot;
+        buttons[rx][ry].status = computer;
         
         
-        buttons[plx][ply].button.setIcon(wkn);
+        buttons[plx][ply].button.setIcon(white_queen);
         buttons[plx][ply].button.setEnabled(false);
         buttons[plx][ply].status = human;
-        for(int i = 0; i < 8; i++) {
+        for(int i = 0; i < 9; i++) {
             int nx = plx + dx[i];
             int ny = ply + dy[i];
             if(nx < 0 || nx > 7 || ny < 0 || ny > 7) continue;
             if(buttons[nx][ny].status == 0) {
                 buttons[nx][ny].status = 3;
-                buttons[nx][ny].button.setBackground(Color.CYAN);
+                buttons[nx][ny].button.setBackground(Color.GREEN);
                 buttons[nx][ny].button.setEnabled(true);
             }
         }
         frame.add(panel);
-        frame.setSize(width, height);
+        frame.setSize(ApplicationConstants.WINDOW_WIDTH, ApplicationConstants.WINDOW_HEIGHT);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -130,7 +128,7 @@ public class Gui {
         boolean humanwins = true;
         while(!grid.gameover) {
 
-            if(grid.humanchance) {
+            if(grid.human_turn) {
                 grid.s.acquire();
             }
             else {
@@ -144,25 +142,24 @@ public class Gui {
                 }
                 session.solve(grid);
                 boolean flag = false;
-                for(int i = 0; i < 8; i++) {
+                for(int i = 0; i < 9; i++) {
                     int nx = grid.plx + dx[i];
                     int ny = grid.ply + dy[i];
                     if(nx < 0 || nx > 7 || ny < 0 || ny > 7) continue;
                     if(grid.buttons[nx][ny].status == 0) {
                         flag = true;
                         grid.buttons[nx][ny].status = 3;
-                        grid.buttons[nx][ny].button.setBackground(Color.CYAN);
+                        grid.buttons[nx][ny].button.setBackground(Color.GREEN);
                         grid.buttons[nx][ny].button.setEnabled(true);
                     }
                 }
 
                 if(!flag) {
-                    //System.out.println("You Lose");
                     grid.frame.setEnabled(false);
                     grid.gameover = true;
                     humanwins = false;
                 }
-                grid.humanchance = true;
+                grid.human_turn = true;
             }
         }
         if(humanwins) {
