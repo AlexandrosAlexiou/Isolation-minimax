@@ -10,7 +10,6 @@ import javax.swing.*;
 
 public class Gui {
 
-
     Semaphore s = new Semaphore(1);
     static int[] dx = {2, 1, -1, -2, -2, -1, 1, 2};
     static int[] dy = {1, 2, 2, 1, -1, -2, -2, -1};
@@ -19,8 +18,8 @@ public class Gui {
     boolean humanchance = true;
     boolean gameover = false;
 
-    Path black_path = new File(ApplicationConstants.BLACK).toPath();
-    Path white_path = new File(ApplicationConstants.WHITE).toPath();
+    Path black_path = new File(ApplicationConstants.BLACK_QUEEN).toPath();
+    Path white_path = new File(ApplicationConstants.WHITE_QUEEN).toPath();
 
     Icon bkn  = new ImageIcon(black_path.toString());
     Icon wkn  = new ImageIcon(white_path.toString());
@@ -79,7 +78,7 @@ public class Gui {
         buttons = new Button[8][8];
         grid = new GridLayout(8, 8);
         panel.setLayout(grid);
-        
+        frame.setResizable(false);
         
         for(int i = 0; i < 8; i++) {
            for(int j = 0; j < 8; j++) {
