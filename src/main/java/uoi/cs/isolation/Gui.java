@@ -1,7 +1,6 @@
 package uoi.cs.isolation;
 
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.Semaphore;
@@ -17,14 +16,10 @@ public class Gui {
     static int computer = 2;
     boolean human_turn = true;
     boolean gameover = false;
-
-    Path black_path = new File(ApplicationConstants.BLACK_QUEEN).toPath();
-    Path white_path = new File(ApplicationConstants.WHITE_QUEEN).toPath();
-
-    Icon black_queen = new ImageIcon(black_path.toString());
-    Icon white_queen = new ImageIcon(white_path.toString());
+    static Icon black_queen;
+    static Icon white_queen;
     int plx, ply;
-    
+
     public class Button {
         JButton button;
         int status;
@@ -118,10 +113,14 @@ public class Gui {
         frame.setSize(ApplicationConstants.WINDOW_WIDTH, ApplicationConstants.WINDOW_HEIGHT);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
     }
+
     public static void main(String[] args) throws Throwable {
 
+        Path black_path = new File(ApplicationConstants.BLACK_QUEEN).toPath();
+        Path white_path = new File(ApplicationConstants.WHITE_QUEEN).toPath();
+        black_queen = new ImageIcon(black_path.toString());
+        white_queen = new ImageIcon(white_path.toString());
         Gui grid = new Gui();
         Engine session = new Engine();
 

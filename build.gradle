@@ -1,18 +1,22 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.5'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
 
 group = 'uoi.cs'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+version = '1.0.0-Release'
+sourceCompatibility = '8'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+}
+
+jar {
+    manifest.attributes(
+        'Main-Class': 'uoi.cs.isolation.Gui',
+    )
 }
 
 test {
