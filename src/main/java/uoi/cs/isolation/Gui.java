@@ -1,8 +1,7 @@
 package uoi.cs.isolation;
 
 import java.awt.*;
-import java.io.File;
-import java.nio.file.Path;
+import java.net.URL;
 import java.util.concurrent.Semaphore;
 import javax.swing.*;
 
@@ -72,6 +71,8 @@ public class Gui {
         grid = new GridLayout(8, 8);
         panel.setLayout(grid);
         frame.setResizable(false);
+        black_queen = new ImageIcon(getImage(ApplicationConstants.BLACK_QUEEN));
+        white_queen = new ImageIcon(getImage(ApplicationConstants.WHITE_QUEEN));
         
         for(int i = 0; i < 8; i++) {
            for(int j = 0; j < 8; j++) {
@@ -115,12 +116,12 @@ public class Gui {
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public static void main(String[] args) throws Throwable {
+    public static Image getImage(final String pathAndFileName) {
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+        return Toolkit.getDefaultToolkit().getImage(url);
+    }
 
-        Path black_path = new File(ApplicationConstants.BLACK_QUEEN).toPath();
-        Path white_path = new File(ApplicationConstants.WHITE_QUEEN).toPath();
-        black_queen = new ImageIcon(black_path.toString());
-        white_queen = new ImageIcon(white_path.toString());
+    public static void main(String[] args) throws Throwable {
         Gui grid = new Gui();
         Engine session = new Engine();
 
